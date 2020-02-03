@@ -7,11 +7,20 @@ def compute_similarity(site_a, site_b):
     Input: two ActiveSite instances
     Output: the similarity between them (a floating point number)
     """
+    if len(site_a.residues) > len(site_b.residues):
+        site_a, site_b = site_b, site_a
+    dists = range(len(site_a.residues) + 1)
 
-    similarity = 0.0
-
-    # Fill in your code here!
-
+    for i, c in enumerate(site_b.residues):
+        nDists = [i +1]
+        for j, d in enumerate(site_a.residues):
+            if c.type == d.type:
+                nDists.append(dists[j])
+            else:
+                m = min((dists[j], dists[j+1], nDists[-1]))
+                nDists.append(1 + m)
+        dists = nDists
+    similarity = dists[-1]
     return similarity
 
 
