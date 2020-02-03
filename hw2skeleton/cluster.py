@@ -23,6 +23,14 @@ def compute_similarity(site_a, site_b):
     similarity = dists[-1]
     return similarity
 
+def calc_similarity_matrix(sites):
+    simMat = []
+    for i in sites:
+        row = []
+        for j in sites:
+            row.append(leven_dist(i,j))
+        simMat.append(row)
+    return pd.DataFrame(simMat)
 
 def cluster_by_partitioning(active_sites):
     """
