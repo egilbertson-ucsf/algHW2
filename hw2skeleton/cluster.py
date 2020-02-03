@@ -24,6 +24,15 @@ def compute_similarity(site_a, site_b):
     return similarity
 
 def calc_similarity_matrix(sites):
+    """
+    Calculate a complete matrix of similarities of all active sites to all others
+        to be used to pull from in clustering so calculations only need to be done once
+    Input: a list of ActiveSite instances
+    Output: complete all by all matrix of levenstein distances between active sites
+            formatted as a pandas DataFrame
+            rows, columns = [0, 1, 2, ... n]
+
+    """
     simMat = []
     for i in sites:
         row = []
