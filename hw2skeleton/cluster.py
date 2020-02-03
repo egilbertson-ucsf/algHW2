@@ -20,7 +20,7 @@ def compute_similarity(site_a, site_b):
                 m = min((dists[j], dists[j+1], nDists[-1]))
                 nDists.append(1 + m)
         dists = nDists
-    similarity = dists[-1]
+    similarity = float(dists[-1])
     return similarity
 
 def calc_similarity_matrix(sites):
