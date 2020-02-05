@@ -1,4 +1,6 @@
 from .utils import Atom, Residue, ActiveSite
+aa3 = "ALA CYS ASP GLU PHE GLY HIS ILE LYS LEU MET ASN PRO GLN ARG SER THR VAL TRP TYR".split()
+
 
 def compute_similarity(site_a, site_b):
     """
@@ -7,21 +9,55 @@ def compute_similarity(site_a, site_b):
     Input: two ActiveSite instances
     Output: the similarity between them (a floating point number)
     """
-    if len(site_a.residues) > len(site_b.residues):
+    if len(site_a) > len(site_a):
         site_a, site_b = site_b, site_a
-    dists = range(len(site_a.residues) + 1)
+    dists = range(len(site_a) + 1)
 
-    for i, c in enumerate(site_b.residues):
+    for i in site_b.index:
         nDists = [i +1]
-        for j, d in enumerate(site_a.residues):
-            if c.type == d.type:
+        for j in site_a.index:
+            aa_a = site_a.columns[site_a.iloc[j] == 1][0]
+            aa_b = site_b.columns[site_b.iloc[i] == 1][0]
+            if aa_a == aa_b:
                 nDists.append(dists[j])
             else:
                 m = min((dists[j], dists[j+1], nDists[-1]))
                 nDists.append(1 + m)
         dists = nDists
-    similarity = float(dists[-1])
+    similarity = dists[-1]
     return similarity
+
+
+def calc_avg_site_length(sites):
+    ss = []
+    for site in sites:
+        ss.append(len(site.residues))
+
+    return [sum(ss) / len(sites), max(ss), min(ss)]
+
+
+def generate_random_site(sites):
+    lens = calc_avg_site_length(sites)
+    num_res = np.random.randint(lens[2],lens[1])
+    site = pd.DataFrame(0, index = range(num_res), columns = aa3)
+
+    for pos in site.index:
+        aa = np.random.randint(0,19)
+        site.iloc[pos,aa] = 1
+
+    return site
+
+
+def compute_cluster_center_dumb(cluster_list, sites):
+    total = pd.DataFrame(columns = aa3)
+    for j in cluster_list:
+        site = sites[sites==j].onehot
+        for row in site.index:
+            if len(total) <= row:
+                total = total.append(site.iloc[row])
+            else:
+                total.iloc[row] += site.iloc[row]
+    return total / len(cluster_list)
 
 def calc_similarity_matrix(sites):
     """
@@ -37,7 +73,7 @@ def calc_similarity_matrix(sites):
     for i in sites:
         row = []
         for j in sites:
-            row.append(leven_dist(i,j))
+            row.append(compute_similarity(i.onehot,j.onehot))
         simMat.append(row)
     return pd.DataFrame(simMat)
 
@@ -101,7 +137,7 @@ class k_mean:
                     self.classifications[i] = []
 
                 for site in sites:
-                    distances = [leven_dist(site.onehot, self.centroids[c]) for c in self.centroids]
+                    distances = [compute_similarity(site.onehot, self.centroids[c]) for c in self.centroids]
                     classification = distances.index(min(distances))
                     self.classifications[classification].append(site)
 
@@ -116,8 +152,8 @@ class k_mean:
                 for c in self.centroids:
                     original_centroid = prev_centroids[c]
                     current_centroid = self.centroids[c]
-                    if  leven_dist(original_centroid, current_centroid) > self.min_diff:
-                        print(leven_dist(original_centroid, current_centroid))
+                    if  compute_similarity(original_centroid, current_centroid) > self.min_diff:
+                        print(compute_similarity(original_centroid, current_centroid))
                         optimized = False
 
                 if optimized:
