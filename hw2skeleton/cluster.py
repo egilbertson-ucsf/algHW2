@@ -49,10 +49,13 @@ def cluster_by_partitioning(active_sites):
     Output: a clustering of ActiveSite instances
             (this is really a list of clusters, each of which is list of
             ActiveSite instances)
+    K-means algorithm, referenced from pythonprogramming.net
+    https://pythonprogramming.net/k-means-from-scratch-machine-learning-tutorial/
     """
-    # Fill in your code here!
+    cls = k_mean()
+    cls = cls.fit_clusters(active_sites)
 
-    return []
+    return cls.classifications.values()
 
 
 def cluster_hierarchically(active_sites):
@@ -67,3 +70,56 @@ def cluster_hierarchically(active_sites):
     # Fill in your code here!
 
     return []
+
+
+
+
+class k_mean:
+    """
+    document k mean class
+    """
+    def __init__(self, k =3, min_diff = 1, max_iter = 10):
+
+
+        self.k = k
+        self.min_diff = min_diff
+        self.max_iter = max_iter
+
+
+    def fit_clusters(self, sites):
+            self.centroids = {}
+
+            for i in range(self.k):
+                self.centroids[i] = generate_random_site(sites, aa3)
+            print('created random centroids')
+
+            for i in range(self.max_iter):
+                print(i)
+                self.classifications = {}
+
+                for i in range(self.k):
+                    self.classifications[i] = []
+
+                for site in sites:
+                    distances = [leven_dist(site.onehot, self.centroids[c]) for c in self.centroids]
+                    classification = distances.index(min(distances))
+                    self.classifications[classification].append(site)
+
+                prev_centroids = dict(self.centroids)
+
+                for classification in self.classifications:
+                    self.centroids[classification] = compute_cluster_center_dumb(self.classifications[classification], sites)
+
+
+                optimized = True
+
+                for c in self.centroids:
+                    original_centroid = prev_centroids[c]
+                    current_centroid = self.centroids[c]
+                    if  leven_dist(original_centroid, current_centroid) > self.min_diff:
+                        print(leven_dist(original_centroid, current_centroid))
+                        optimized = False
+
+                if optimized:
+                    print('opt')
+                    return

@@ -1,4 +1,13 @@
 # Some utility classes to represent a PDB structure
+import pandas as pd
+
+## need this to create one hot encodings
+aa3 = "ALA CYS ASP GLU PHE GLY HIS ILE LYS LEU MET ASN PRO GLN ARG SER THR VAL TRP TYR".split()
+def one_hot_encode(site):
+    site.onehot = pd.DataFrame(0, index = range(len(site.residues)), columns=aa3)
+    for i, aa in enumerate(site.residues):
+        site.onehot.loc[i, aa.type] = 1
+    return site.onehot
 
 class Atom:
     """
@@ -35,6 +44,7 @@ class ActiveSite:
     def __init__(self, name):
         self.name = name
         self.residues = []
+        self.onehot = None
 
     # Overload the __repr__ operator to make printing simpler.
     def __repr__(self):

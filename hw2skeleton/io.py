@@ -1,6 +1,6 @@
 import glob
 import os
-from .utils import Atom, Residue, ActiveSite
+from .utils import Atom, Residue, ActiveSite, one_hot_encode
 
 
 def read_active_sites(dir):
@@ -17,7 +17,9 @@ def read_active_sites(dir):
     for filepath in glob.iglob(os.path.join(dir, "*.pdb")):
 
         active_sites.append(read_active_site(filepath))
-
+        
+    for site in active_sites:
+        site.onehot = one_hot_encode(site)
     print("Read in %d active sites"%len(active_sites))
 
     return active_sites
@@ -107,3 +109,5 @@ def write_mult_clusterings(filename, clusterings):
                 out.write("%s\n" % clusters[j][k])
 
     out.close()
+
+    
