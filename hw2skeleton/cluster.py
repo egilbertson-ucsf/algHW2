@@ -8,28 +8,17 @@ def compute_similarity(site_a, site_b):
     """
     Compute the similarity between two given ActiveSite instances.
 
+    This will calculate the Euclidean distance between the numeric vector
+    representationof two active sites.
+    The numeric vector representation is based on counts of each
+    amino acid present at a given active site.
+
+
     Input: two ActiveSite instances
     Output: the similarity between them (a floating point number)
     """
     return np.linalg.norm(site_a - site_b)
 
-
-
-
-
-
-def calc_similarity_matrix(sites):
-    """
-    Calculate a complete matrix of similarities of all active sites to all others
-        to be used to pull from in clustering so calculations only need to be done once
-    Input: a list of ActiveSite instances
-    Output: complete all by all matrix of levenstein distances between active sites
-            formatted as a pandas DataFrame
-            rows, columns = [0, 1, 2, ... n]
-
-    """
-
-    return pd.DataFrame(simMat)
 
 def cluster_by_partitioning(active_sites):
     """
@@ -42,7 +31,7 @@ def cluster_by_partitioning(active_sites):
     """
 
 
-    return 
+    return
 
 
 def cluster_hierarchically(active_sites):
@@ -57,6 +46,3 @@ def cluster_hierarchically(active_sites):
     # Fill in your code here!
 
     return []
-
-
-
