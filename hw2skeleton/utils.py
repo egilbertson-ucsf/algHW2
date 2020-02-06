@@ -3,11 +3,13 @@ import pandas as pd
 
 ## need this to create one hot encodings
 aa3 = "ALA CYS ASP GLU PHE GLY HIS ILE LYS LEU MET ASN PRO GLN ARG SER THR VAL TRP TYR".split()
-def one_hot_encode(site):
-    site.onehot = pd.DataFrame(0, index = range(len(site.residues)), columns=aa3)
-    for i, aa in enumerate(site.residues):
-        site.onehot.loc[i, aa.type] = 1
-    return site.onehot
+aa_df = pd.DataFrame(0, index=list(aa3), columns=['Count'])
+
+def get_repr(site):
+    df = aa_df.copy()
+    for aa in site.residues:
+        df.loc[aa.type] += 1
+    return df
 
 class Atom:
     """
@@ -44,7 +46,7 @@ class ActiveSite:
     def __init__(self, name):
         self.name = name
         self.residues = []
-        self.onehot = None
+        self.counts = None
 
     # Overload the __repr__ operator to make printing simpler.
     def __repr__(self):

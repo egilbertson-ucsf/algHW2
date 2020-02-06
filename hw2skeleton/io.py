@@ -1,6 +1,6 @@
 import glob
 import os
-from .utils import Atom, Residue, ActiveSite, one_hot_encode
+from .utils import Atom, Residue, ActiveSite, get_repr
 
 
 def read_active_sites(dir):
@@ -19,7 +19,7 @@ def read_active_sites(dir):
         active_sites.append(read_active_site(filepath))
         
     for site in active_sites:
-        site.onehot = one_hot_encode(site)
+        site.counts = get_repr(site)
     print("Read in %d active sites"%len(active_sites))
 
     return active_sites
