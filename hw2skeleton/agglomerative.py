@@ -3,6 +3,7 @@ from hw2skeleton import io
 import os
 import pandas as pd
 import numpy as np
+from hw2skeleton.utils import *
 aa3 = "ALA CYS ASP GLU PHE GLY HIS ILE LYS LEU MET ASN PRO GLN ARG SER THR VAL TRP TYR".split()
 aa_df = pd.DataFrame(0, index=list(aa3), columns=['Count'])
 
@@ -94,7 +95,7 @@ def unpack_cluster(cluster_list, sites_dict, clusters):
             out_list.append(key)
     return out_list
 
-def run_everything(k, simMat_update):
+def run_everything(k, simMat_update, sites_dict):
     c = 0
     clusters = {}
     while len(simMat_update) > k:
@@ -116,6 +117,6 @@ def agglomerative():
         sites_dict[site.name] = site
     simMat = compute_similarity_matrix(sites)
     simMat_update = simMat.copy()
-    c = run_everything(2, simMat_update)
+    c = run_everything(2, simMat_update, sites_dict)
     assgn = make_cluster_assign_df(c, simMat)
     return c, sk.silhouette_score(simMat, assgn['Cluster Assignment'], metric='precomputed')

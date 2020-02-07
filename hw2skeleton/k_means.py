@@ -124,7 +124,7 @@ def avg_sl(sites, k, simMat):
 
 
 
-def k_means():
+def k_means(sites=None):
     sites = io.read_active_sites('data')
     simMat = compute_similarity_matrix(sites)
     points = [[],[]]

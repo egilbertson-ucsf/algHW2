@@ -1,6 +1,9 @@
 from .utils import Atom, Residue, ActiveSite
 import numpy as np
 import pandas as pd
+from sklearn.metrics import jaccard_similarity_score
+from k_means import k_means
+from agglomerative import agglomerative
 aa3 = "ALA CYS ASP GLU PHE GLY HIS ILE LYS LEU MET ASN PRO GLN ARG SER THR VAL TRP TYR".split()
 
 
@@ -29,9 +32,9 @@ def cluster_by_partitioning(active_sites):
             (this is really a list of clusters, each of which is list of
             ActiveSite instances)
     """
+    cls, sc = k_means(active_sites)
 
-
-    return
+    return cls
 
 
 def cluster_hierarchically(active_sites):
@@ -43,6 +46,11 @@ def cluster_hierarchically(active_sites):
             (each clustering is a list of lists of Sequence objects)
     """
 
-    # Fill in your code here!
 
-    return []
+    cls, sc = agglomerative(active_sites)
+
+    return cls
+
+
+def jacaard(clusters_a, clusters_b):
+    return jaccard_similarity_score(clusters_a, clusters_b)
