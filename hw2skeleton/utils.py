@@ -31,7 +31,7 @@ def make_cluster_assign_df(clusters, simMat):
             assgn.loc[site.name] = cluster
     return assgn
 
-def do_PCA(assgn, sites):
+def do_PCA(assgn, sites, simMat):
     '''
     Do PCA based on sklearn tutorial
 

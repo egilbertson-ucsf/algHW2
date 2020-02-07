@@ -10,6 +10,10 @@ aa_df = pd.DataFrame(0, index=list(aa3), columns=['Count'])
 
 
 def calc_avg_site_length(sites):
+    '''
+    calculate the average size of an active site
+    for use in generating random sites
+    '''
     ss = []
     for site in sites:
         ss.append(len(site.residues))
@@ -18,6 +22,9 @@ def calc_avg_site_length(sites):
 
 
 def generate_random_site(sites):
+    '''
+    generate a random site by filling in a 1x20 vector repr of amino acids with counts
+    '''
     lens = calc_avg_site_length(sites)
     num_res = np.random.randint(lens[2],lens[1])
     site = aa_df.copy()
@@ -29,12 +36,19 @@ def generate_random_site(sites):
     return site
 
 def generate_k_random_centroids(k, sites):
+    '''
+    generate k random sites using above function
+    '''
     centroids = {}
     for i in range(k):
         centroids[i] = generate_random_site(sites)
     return centroids
 
 def assign_single_site_to_cluster(site, centroids):
+    '''
+    check which cluster centroid is closest to the given site and assign the
+    site to that cluster
+    '''
     loc = site.counts
     dists = {}
     for c in centroids.keys():
@@ -44,6 +58,9 @@ def assign_single_site_to_cluster(site, centroids):
     return closest
 
 def assign_all_sites_to_cluster(sites, centroids, clusters):
+    '''
+    loop through all sites and assign them to the appropriate clusters
+    '''
     for site in sites:
         close = assign_single_site_to_cluster(site, centroids)
         if close not in clusters:
@@ -56,6 +73,10 @@ def assign_all_sites_to_cluster(sites, centroids, clusters):
     return clusters
 
 def compute_cluster_center(cluster_list, sites_dict):
+    '''
+    compute the center of a cluster by taking the average of the vector representations
+    of all sites in the cluster
+    '''
     sites = aa_df.copy()
     for j in cluster_list:
         if isinstance(j, str):
@@ -65,18 +86,24 @@ def compute_cluster_center(cluster_list, sites_dict):
     return sites / len(sites)
 
 def get_new_centroids(clusters, sites_dict=None):
+    '''
+    use the compute_cluster_center function to get the new centroids after updating
+    assignments
+    '''
     centroids = {}
     for cluster in clusters.keys():
         centroids[cluster] = compute_cluster_center(clusters[cluster], sites_dict)
     return centroids
 
 def check_change_in_centroids(old_centroids, new_centroids):
+    ''' check how far the centroids have moved '''
     diff = 0
     for c in old_centroids.keys():
         diff += cl.compute_similarity(old_centroids[c], new_centroids[c])
     return diff
 
 def one_full_k_means(sites, k):
+    ''' using all above functions, one full iteration of k means'''
     centroids = generate_k_random_centroids(k, sites)
     clusters = {}
     clusters = assign_all_sites_to_cluster(sites, centroids, clusters)
@@ -93,6 +120,8 @@ def one_full_k_means(sites, k):
     return clusters, centroids
 
 def compute_similarity_matrix(sites):
+    ''' copy of computer similarity matrix from utils '''
+
     simMat = []
     names = []
     for i in range(len(sites)):
@@ -106,6 +135,7 @@ def compute_similarity_matrix(sites):
     return simMat
 
 def make_cluster_assign_df(clusters, simMat):
+    ''' make a nice df repr of the cluster assignments'''
     assgn = pd.DataFrame(index = simMat.index, columns = ['Cluster Assignment'])
     for cluster in clusters.keys():
         for site in clusters[cluster]:
@@ -113,6 +143,8 @@ def make_cluster_assign_df(clusters, simMat):
     return assgn
 
 def avg_sl(sites, k, simMat):
+    ''' average silhouette_score for i random starts of k means for k clusters'''
+
     scores = []
     c_list = []
     for i in range(1):
@@ -125,6 +157,7 @@ def avg_sl(sites, k, simMat):
 
 
 def k_means(sites=None):
+    ''' run k means '''
     sites = io.read_active_sites('data')
     simMat = compute_similarity_matrix(sites)
     points = [[],[]]
