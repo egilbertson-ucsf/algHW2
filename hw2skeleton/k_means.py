@@ -4,6 +4,7 @@ import sklearn.metrics as sk
 import os
 import pandas as pd
 import numpy as np
+import math
 aa3 = "ALA CYS ASP GLU PHE GLY HIS ILE LYS LEU MET ASN PRO GLN ARG SER THR VAL TRP TYR".split()
 aa_df = pd.DataFrame(0, index=list(aa3), columns=['Count'])
 
@@ -113,8 +114,25 @@ def make_cluster_assign_df(clusters, simMat):
 
 def avg_sl(sites, k, simMat):
     scores = []
-    for i in range(10):
+    c_list = []
+    for i in range(1):
         clusters, centroids = one_full_k_means(sites, k)
         assgn = make_cluster_assign_df(clusters, simMat)
+        c_list.append(clusters)
         scores.append(sk.silhouette_score(simMat, assgn['Cluster Assignment'], metric='precomputed'))
-    return min(scores)
+    return scores, clusters
+
+
+
+def main():
+    sites = io.read_active_sites('data')
+    simMat = compute_similarity_matrix(sites)
+    points = [[],[]]
+    clusters = []
+    for i in range(2,5):
+        points[0].append(i)
+        temp = avg_sl(sites, i , simMat)
+        points[1].append(temp[0])
+        clusters.append(temp[1])
+
+    return clusters[points[1].index(max(points[1]))], max(points[1])
