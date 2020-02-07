@@ -110,6 +110,15 @@ def run_everything(k, simMat_update, sites_dict):
         clusters = update_cluster_dict(new_name, min_pair, clusters, sites_dict)
     return clusters
 
+
+def make_cluster_assign_df(clusters, simMat):
+    assgn = pd.DataFrame(index = simMat.index, columns = ['Cluster Assignment'])
+    for cluster in clusters.keys():
+        for site in clusters[cluster]:
+            assgn.loc[site] = cluster
+    return assgn
+
+
 def agglomerative():
     sites = io.read_active_sites('data')
     sites_dict = {}
