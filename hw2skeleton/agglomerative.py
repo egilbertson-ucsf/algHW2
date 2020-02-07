@@ -4,11 +4,17 @@ import os
 import pandas as pd
 import numpy as np
 from hw2skeleton.utils import *
+import sklearn.metrics as sk
 aa3 = "ALA CYS ASP GLU PHE GLY HIS ILE LYS LEU MET ASN PRO GLN ARG SER THR VAL TRP TYR".split()
 aa_df = pd.DataFrame(0, index=list(aa3), columns=['Count'])
 
 
 def compute_similarity_matrix(sites):
+    '''
+    Compute the similarity matrix of all sites by all sites using the similarity algorithm in the cluster.py script
+    In: list of sites
+    out: similarity matrix as pandas dataframe
+    '''
     simMat = []
     names = []
     for i in range(len(sites)):
@@ -23,6 +29,11 @@ def compute_similarity_matrix(sites):
 
 
 def find_min(simMat):
+    '''
+    In: similarity matrix
+    Out: a list of the names of the two clusters that are closest to one another
+    simple loop through the similarity matrix
+    '''
     min_value = simMat[simMat!=0].min()[0]
     min_pair = [simMat[simMat!=0].idxmin()[0], simMat.index[0]]
     for i in simMat:
@@ -33,12 +44,25 @@ def find_min(simMat):
 
 
 def rm_most_similar(df, pair):
+    '''
+    remove the rows and columns of the pair of most similar clusters from the similarity matrix
+
+    '''
     return df.drop(pair, axis=0).drop(pair, axis =1)
+
 def name_cluster(num):
+    '''
+    generate the string to name the nth clusters
+    '''
     return str('c' + str(num))
 
 
 def compute_cluster_center(cluster_list, sites_dict, aa_df):
+    '''
+    In list of sites in cluster, sites_dict to reference names to cluster objects, template DataFrame
+    Out: vector repr of average of the cluster
+    '''
+
     sites = aa_df
     for j in cluster_list:
         sites += sites_dict[j].counts
@@ -46,6 +70,9 @@ def compute_cluster_center(cluster_list, sites_dict, aa_df):
 
 
 def compute_new_cluster_sim(new_clust_avg, simMat_update, sites_dict, clusters):
+    '''
+    compute the similarity of the newly created cluster to the rest of the clusters
+    '''
     newSim = []
     for site in simMat_update.columns:
         if site not in sites_dict:
@@ -59,6 +86,9 @@ def compute_new_cluster_sim(new_clust_avg, simMat_update, sites_dict, clusters):
 
 
 def update_simMat(newSim, simMat_update, new_name):
+    '''
+    add the row/column of similarity values for the new cluster calculated above
+    '''
     simMat_update[new_name] = None
     newRow = pd.DataFrame([newSim], columns = simMat_update.columns, index = [new_name])
     simMat_update = simMat_update.append(newRow)
@@ -68,6 +98,9 @@ def update_simMat(newSim, simMat_update, new_name):
 
 
 def update_cluster_dict(new_name, min_pair, clusters, sites_dict):
+    '''
+    update the dictionary of cluster label to site lists
+    '''
     pair0 = []
     pair1 = []
     if min_pair[0] in clusters:
@@ -86,6 +119,10 @@ def update_cluster_dict(new_name, min_pair, clusters, sites_dict):
 
 
 def unpack_cluster(cluster_list, sites_dict, clusters):
+    '''
+    if a cluster name is not one of the base site names, unpack it to a list
+    of the site names contained in the cluster
+    '''
     out_list = []
     for key in cluster_list:
         if key not in sites_dict:
@@ -96,6 +133,9 @@ def unpack_cluster(cluster_list, sites_dict, clusters):
     return out_list
 
 def run_everything(k, simMat_update, sites_dict):
+    '''
+    run all the above functions to get the cluster dictionary at a given level k
+    '''
     c = 0
     clusters = {}
     while len(simMat_update) > k:
@@ -112,6 +152,9 @@ def run_everything(k, simMat_update, sites_dict):
 
 
 def make_cluster_assign_df(clusters, simMat):
+    '''
+    helper function to make a nice representation for inputting into test_similarity
+    '''
     assgn = pd.DataFrame(index = simMat.index, columns = ['Cluster Assignment'])
     for cluster in clusters.keys():
         for site in clusters[cluster]:
@@ -120,6 +163,9 @@ def make_cluster_assign_df(clusters, simMat):
 
 
 def agglomerative():
+    '''
+    main function to run a complete agglomerative clustering job
+    '''
     sites = io.read_active_sites('data')
     sites_dict = {}
     for site in sites:

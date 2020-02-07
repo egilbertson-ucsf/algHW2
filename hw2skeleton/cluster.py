@@ -60,4 +60,4 @@ def jacaard(clusters_a, clusters_b):
         Output: score
                 (each clustering is a list of lists of Sequence objects)
         """
-    return jaccard_similarity_score(clusters_a, clusters_b)
+        return jaccard_similarity_score(clusters_a, clusters_b)

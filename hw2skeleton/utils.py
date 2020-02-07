@@ -12,21 +12,31 @@ def get_repr(site):
     return df
 
 
-def make_repr_data_frame(sites):
+def make_repr_data_frame(sites, simMat):
+    '''
+    put the vector representations into a data frame for PCA
+    '''
     df = pd.DataFrame(index = aa3, columns = simMat.columns )
     for site in sites:
         df[site.name] = site.counts
     return df
 
 def make_cluster_assign_df(clusters, simMat):
+    '''
+    make a df of cluster assignments for downstream use
+    '''
     assgn = pd.DataFrame(index = simMat.index, columns = ['Cluster Assignment'])
     for cluster in clusters.keys():
         for site in clusters[cluster]:
             assgn.loc[site.name] = cluster
     return assgn
 
-def do_PCA(assgn):
-    a = make_repr_data_frame(sites).T
+def do_PCA(assgn, sites):
+    '''
+    Do PCA based on sklearn tutorial
+
+    '''
+    a = make_repr_data_frame(sites, simMat).T
     pca = PCA(n_components=2)
     p = pca.fit_transform(a)
     principalDf = pd.DataFrame(data = p
@@ -36,6 +46,9 @@ def do_PCA(assgn):
     return finalDF
 
 def pca_plot(clusters, finalDf):
+    '''
+    plot pca based on sk learn tutorial
+    '''
     fig = plt.figure(figsize = (8,8))
     ax = fig.add_subplot(1,1,1)
     ax.set_xlabel('Principal Component 1', fontsize = 15)
@@ -51,7 +64,7 @@ def pca_plot(clusters, finalDf):
                    , s = 50)
     ax.legend(targets)
     ax.grid()
-    return 
+    return
 
 class Atom:
     """
