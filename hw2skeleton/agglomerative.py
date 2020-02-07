@@ -93,3 +93,29 @@ def unpack_cluster(cluster_list, sites_dict, clusters):
         else:
             out_list.append(key)
     return out_list
+
+def run_everything(k, simMat_update):
+    c = 0
+    clusters = {}
+    while len(simMat_update) > k:
+        new_name = name_cluster(c)
+        c += 1
+        min_pair=find_min(simMat_update)
+        clust_sites = unpack_cluster(min_pair, sites_dict, clusters)
+        simMat_update = rm_most_similar(simMat_update, min_pair)
+        new_clust_avg = compute_cluster_center(clust_sites, sites_dict, aa_df)
+        newSim = compute_new_cluster_sim(new_clust_avg, simMat_update, sites_dict, clusters)
+        simMat_update = update_simMat(newSim, simMat_update, new_name)
+        clusters = update_cluster_dict(new_name, min_pair, clusters, sites_dict)
+    return clusters
+
+def agglomerative():
+    sites = io.read_active_sites('data')
+    sites_dict = {}
+    for site in sites:
+        sites_dict[site.name] = site
+    simMat = compute_similarity_matrix(sites)
+    simMat_update = simMat.copy()
+    c = run_everything(2, simMat_update)
+    assgn = make_cluster_assign_df(c, simMat)
+    return c, sk.silhouette_score(simMat, assgn['Cluster Assignment'], metric='precomputed')
