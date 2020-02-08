@@ -44,7 +44,7 @@ def do_PCA(assgn, sites, simMat):
                  , columns = ['principal component 1', 'principal component 2'], index = simMat.index)
     finalDf = pd.concat([principalDf, assgn[['Cluster Assignment']]], axis = 1)
 
-    return finalDF
+    return finalDf
 
 def pca_plot(clusters, finalDf):
     '''
