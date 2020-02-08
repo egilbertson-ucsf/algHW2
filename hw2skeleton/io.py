@@ -70,7 +70,7 @@ def read_active_site(filepath):
             else:  # I've reached a TER card
                 active_site.residues.append(residue)
 
-    site.counts = get_repr(site)
+    active_site.counts = get_repr(active_site)
     return active_site
 
 
