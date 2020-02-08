@@ -1,5 +1,6 @@
 # Some utility classes to represent a PDB structure
 import pandas as pd
+from sklearn.decomposition import PCA
 
 ## need this to create one hot encodings
 aa3 = "ALA CYS ASP GLU PHE GLY HIS ILE LYS LEU MET ASN PRO GLN ARG SER THR VAL TRP TYR".split()
