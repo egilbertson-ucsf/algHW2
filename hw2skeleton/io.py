@@ -17,7 +17,7 @@ def read_active_sites(dir):
     for filepath in glob.iglob(os.path.join(dir, "*.pdb")):
 
         active_sites.append(read_active_site(filepath))
-        
+
     for site in active_sites:
         site.counts = get_repr(site)
     print("Read in %d active sites"%len(active_sites))
@@ -41,6 +41,7 @@ def read_active_site(filepath):
     active_site = ActiveSite(name[0])
 
     r_num = 0
+
 
     # open pdb file
     with open(filepath, "r") as f:
@@ -69,6 +70,7 @@ def read_active_site(filepath):
             else:  # I've reached a TER card
                 active_site.residues.append(residue)
 
+    site.counts = get_repr(site)
     return active_site
 
 
@@ -109,5 +111,3 @@ def write_mult_clusterings(filename, clusterings):
                 out.write("%s\n" % clusters[j][k])
 
     out.close()
-
-    
