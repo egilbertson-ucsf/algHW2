@@ -162,7 +162,7 @@ def make_cluster_assign_df(clusters, simMat):
     return assgn
 
 
-def agglomerative():
+def agglomerative(site = None):
     '''
     main function to run a complete agglomerative clustering job
     '''

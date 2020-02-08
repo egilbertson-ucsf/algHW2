@@ -31,7 +31,10 @@ def make_cluster_assign_df(clusters, simMat):
     assgn = pd.DataFrame(index = simMat.index, columns = ['Cluster Assignment'])
     for cluster in clusters.keys():
         for site in clusters[cluster]:
-            assgn.loc[site] = cluster
+            if isinstance(site, str):
+                assgn.loc[site] = cluster
+            else:
+                assgn.loc[site.name] = cluster
     return assgn
 
 def do_PCA(assgn, sites, simMat):

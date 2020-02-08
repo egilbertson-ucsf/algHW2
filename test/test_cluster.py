@@ -11,6 +11,7 @@ def test_similarity():
     assert cluster.compute_similarity(activesite_a.counts, activesite_b.counts) == np.linalg.norm(activesite_a.counts - activesite_b.counts)
     assert cluster.compute_similarity(activesite_a.counts, activesite_a.counts) == 0
     assert cluster.compute_similarity(activesite_a.counts, activesite_b.counts) == cluster.compute_similarity(activesite_b.counts, activesite_a.counts)
+
 def test_partition_clustering():
     # tractable subset
     pdb_ids = [276, 4629, 10701]
@@ -32,5 +33,5 @@ def test_hierarchical_clustering():
         filepath = os.path.join("data", "%i.pdb"%id)
         active_sites.append(io.read_active_site(filepath))
 
-
+    print()
     assert len(cluster.cluster_hierarchically(active_sites).keys()) >=2
