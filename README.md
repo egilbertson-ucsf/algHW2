@@ -1,9 +1,22 @@
 # HW2 Skeleton
 
 [![Build
-Status](https://travis-ci.org/egilbertson-ucsf/algHW2.svg?branch=master)](https://travis-ci.org/egilbertson-ucsf/alHW2)
+Status](https://travis-ci.org/egilbertson-ucsf/algHW2.svg?branch=master)](https://travis-ci.org/egilbertson-ucsf/algHW2)
+
+## Location of Important Things for TAs to see
+### Clustering functions
+Located in k_means.py and agglomerative.py respectively
+### helper functions
+added to utils.py
+    - in utils also added to classes a bit
+### running functions 'for real' 
+inside cluster.py
+### Plotting and Quality checking
+in clean_running_scripts.ipynb
+Anything relevant is also reported in the write up pdf
 
 Skeleton for clustering project.
+
 
 ## assignment
 
