@@ -1,7 +1,7 @@
 from hw2skeleton import cluster
 from hw2skeleton import io
 import os
-
+import numpy as np
 def test_similarity():
     filename_a = os.path.join("data", "276.pdb")
     filename_b = os.path.join("data", "4629.pdb")

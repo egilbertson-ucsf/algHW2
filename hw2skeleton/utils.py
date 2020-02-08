@@ -2,6 +2,8 @@
 import pandas as pd
 from sklearn.decomposition import PCA
 
+import matplotlib.pyplot as plt
+
 ## need this to create one hot encodings
 aa3 = "ALA CYS ASP GLU PHE GLY HIS ILE LYS LEU MET ASN PRO GLN ARG SER THR VAL TRP TYR".split()
 aa_df = pd.DataFrame(0, index=list(aa3), columns=['Count'])
