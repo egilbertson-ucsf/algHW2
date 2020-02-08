@@ -9,9 +9,7 @@ def test_similarity():
     activesite_a = io.read_active_site(filename_a)
     activesite_b = io.read_active_site(filename_b)
 
-    print(cluster.compute_similarity(activesite_a.counts, activesite_b.counts))
-    print(np.linalg.norm(activesite_a - activesite_b))
-    assert cluster.compute_similarity(activesite_a.counts, activesite_b.counts) == np.linalg.norm(activesite_a - activesite_b)
+    assert cluster.compute_similarity(activesite_a.counts, activesite_b.counts) == np.linalg.norm(activesite_a.counts - activesite_b.counts)
 
 def test_partition_clustering():
     # tractable subset
